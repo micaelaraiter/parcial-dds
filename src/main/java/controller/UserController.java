@@ -3,19 +3,23 @@ package controller;
 import java.sql.*;
 
 public class UserController {
+    private ConnectionToDB connectionToDB;
 
-    public static void main(String args[]) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        ConnectionToDB.initDb();
-        Connection connection = ConnectionToDB.initDb();
-        String sql ="INSERT INTO Usuario (usuario_id,nombre) values (1,'mica')";
+    public UserController() {
+        this.connectionToDB = new ConnectionToDB();
+    }
+
+    public void main(String args[]) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+
+        Connection connection = this.connectionToDB.connection;
+        String sql = "INSERT INTO Usuario (usuario_id,nombre) values (1,'mica')";
         Statement statement = connection.createStatement();
         boolean rows = statement.execute(sql);
     }
 
     public static boolean selectUserByEmail(String email) throws SQLException {
-        ConnectionToDB.initDb();
-        Connection connection = ConnectionToDB.initDb();
-        String sql ="select * Usuario where mail = $(email)";
+        Connection connection = this.connectionToDB.connection;
+        String sql = "select * Usuario where mail = $(email)";
         Statement statement = connection.createStatement();
         boolean rows = statement.execute(sql);
         return true;
