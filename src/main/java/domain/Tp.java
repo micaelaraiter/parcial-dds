@@ -1,20 +1,25 @@
 package domain;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-public class Tp implements Homework{
-    @Override
+public class Tp extends Homework{
+    private List<Homework> homeworks = new ArrayList<>();
+
+    public List<Homework> getHomeworks() {
+        return homeworks;
+    }
+
+    public void setHomeworks(List<Homework> homeworks) {
+        this.homeworks = homeworks;
+    }
+
     public Date getDuedDate() {
-        return null;
-    }
+        //TODO: review :(
+       // return this.homeworks.stream()
+       //         .map(homework -> homework.getDuedDate()).max(Date::compareTo).get();
 
-    @Override
-    public Number getNote() {
-        return null;
-    }
-
-    @Override
-    public void sendNote() {
-
+        return new Date();
     }
 }

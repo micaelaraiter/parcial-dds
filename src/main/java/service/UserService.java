@@ -1,6 +1,6 @@
 package service;
 
-import controller.UserController;
+import controller.Repository;
 import domain.User;
 
 import java.sql.SQLException;
@@ -10,7 +10,7 @@ public class UserService {
 
     public static boolean login(User user) throws SQLException {
         String email = user.getEmail();
-        return UserController.selectUserByEmail(email);
+        return Repository.selectUserByEmail(email);
     }
 
     public static User showFormLogin(){
