@@ -16,8 +16,8 @@ public class HomeworksPage {
         switch (studentId) {
             case 0: {
                 User userLogged = UserService.showFormLogin();
-                boolean isUserLogged = UserService.login(userLogged);
-                if(!isUserLogged){
+                User user = UserService.login(userLogged);
+                if(user == null){
                     System.out.println("No se ha encontrado el email ingresado");
                 }
                 //todo: mostrarMenu segun userType

@@ -8,7 +8,17 @@ import java.util.List;
 public class Student {
     private Number id;
     private Course course;
+    private User user;
     private boolean hasPassed;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     private List<Homework> homeworks = new ArrayList<>();
 
     public Number getId() {

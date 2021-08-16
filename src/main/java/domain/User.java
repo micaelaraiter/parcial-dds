@@ -1,6 +1,15 @@
 package domain;
 
 public class User {
+    private Number id;
+
+    public Number getId() {
+        return id;
+    }
+
+    public void setId(Number id) {
+        this.id = id;
+    }
 
     private String name;
     private String lastName;
