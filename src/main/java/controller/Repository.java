@@ -1,8 +1,6 @@
 package controller;
 
-import domain.Homework;
-import domain.Student;
-import domain.User;
+import domain.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -15,15 +13,15 @@ public class Repository {
         this.connectionToDB = new ConnectionToDB();
     }
 
-    public static  void registerUser(User user) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public static void registerUser(User user) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 
         Connection connection = ConnectionToDB.initDb();
         String sql = "INSERT INTO User (firstName,lastName,email,password) values (?, ?,?,?)";
         PreparedStatement stm = connection.prepareStatement(sql);
-        stm.setString(1,user.getName());
-        stm.setString(2,user.getLastName());
-        stm.setString(3,user.getEmail());
-        stm.setString(4,user.getPassword());
+        stm.setString(1, user.getName());
+        stm.setString(2, user.getLastName());
+        stm.setString(3, user.getEmail());
+        stm.setString(4, user.getPassword());
         stm.executeUpdate();
         connection.close();
     }
@@ -34,7 +32,7 @@ public class Repository {
         PreparedStatement stm = connection.prepareStatement(sql);
         stm.setString(1, email);
         ResultSet resultSet = stm.executeQuery();
-        if(resultSet.next()){
+        if (resultSet.next()) {
             User userMapper = new User();
             userMapper.setId(resultSet.getInt("user_id"));
             userMapper.setEmail(resultSet.getString("email"));
@@ -51,7 +49,7 @@ public class Repository {
         Connection connection = ConnectionToDB.initDb();
         String sql = "INSERT INTO Student (user_id) values (?)";
         PreparedStatement stm = connection.prepareStatement(sql);
-        stm.setInt(1,userID);
+        stm.setInt(1, userID);
         stm.executeUpdate();
         connection.close();
     }
@@ -62,7 +60,7 @@ public class Repository {
         PreparedStatement stm = connection.prepareStatement(sql);
         stm.setInt(1, (Integer) user.getId());
         ResultSet resultSet = stm.executeQuery();
-        if(resultSet.next()){
+        if (resultSet.next()) {
             Student studentMapper = new Student();
             studentMapper.setId(resultSet.getInt("student_id"));
             studentMapper.setUser(user);
@@ -73,14 +71,14 @@ public class Repository {
         return null;
     }
 
-    public static  void selectHomeworkByStudentId(int studentId) throws SQLException {
+    public static void selectHomeworkByStudentId(int studentId) throws SQLException {
         Connection connection = ConnectionToDB.initDb();
         String sql = "select Homework.homework_id, Homework.title,Homework.description, Homework.date_dued,Homework.orden,Homework.state_id,Homework.tp_id from HomeworkStudent  INNER JOIN Homework ON HomeworkStudent.homework_id = Homework.homework_id where HomeworkStudent.student_id = ?";
         PreparedStatement stm = connection.prepareStatement(sql);
         stm.setInt(1, studentId);
         ResultSet resultSet = stm.executeQuery();
-        List<Homework> homeworkList= new ArrayList<Homework>();
-        while (resultSet.next()){
+        List<Homework> homeworkList = new ArrayList<Homework>();
+        while (resultSet.next()) {
             Homework homework = new Homework();
             homework.setId(resultSet.getInt("homework_id"));
             homework.setTitle(resultSet.getString("title"));
@@ -100,4 +98,58 @@ public class Repository {
         //boolean rows = statement.execute(sql);
         return null;
     }
+
+    public static void createTp(Tp tp) throws SQLException {
+        Connection connection = ConnectionToDB.initDb();
+        String sql = "INSERT INTO TP (title) values (?)";
+        PreparedStatement stm = connection.prepareStatement(sql);
+        stm.setString(1, tp.getTitle());
+        stm.executeUpdate();
+        connection.close();
+    }
+
+
+    public static void createHomework(SimpleHomework simpleHomework) throws SQLException {
+        Connection connection = ConnectionToDB.initDb();
+        if (simpleHomework.getTpId() == 0) {
+            String sql = "INSERT INTO Homework (title,date_dued) values (?,?)";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setString(1, simpleHomework.getTitle());
+            stm.setDate(2, (Date) simpleHomework.getDuedDate());
+            stm.executeUpdate();
+        } else {
+            String sql = "INSERT INTO Homework (title,date_dued,tp_id,orden) values (?,?,?,?)";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setString(1, simpleHomework.getTitle());
+            stm.setDate(2, (Date) simpleHomework.getDuedDate());
+            stm.setInt(3, simpleHomework.getTpId());
+            stm.setInt(4, simpleHomework.getOrder());
+            stm.executeUpdate();
+        }
+
+        connection.close();
+    }
+
+    public static SimpleHomework selectHomeworkById(int id) throws SQLException {
+        Connection connection = ConnectionToDB.initDb();
+        String sql = "select * from Homework where homework_id = ?";
+        PreparedStatement stm = connection.prepareStatement(sql);
+        stm.setInt(1, id);
+        ResultSet resultSet = stm.executeQuery();
+        if (resultSet.next()) {
+            SimpleHomework homeworkMapper = new SimpleHomework();
+            homeworkMapper.setId(id);
+            homeworkMapper.setTitle(resultSet.getString("title"));
+            homeworkMapper.setOrder(resultSet.getInt("orden"));
+            homeworkMapper.setTpId(resultSet.getInt("tp_id"));
+            //homeworkMapper.setDuedDate(resultSet.getDate("dued_date"));
+            homeworkMapper.setGrade(resultSet.getInt("grade"));
+            //homeworkMapper.setState(resultSet.getInt("state_id"));
+            return homeworkMapper;
+        }
+
+        connection.close();
+        return null;
+    }
+
 }

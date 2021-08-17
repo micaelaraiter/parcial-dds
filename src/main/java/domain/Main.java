@@ -1,6 +1,7 @@
 package domain;
 
 import service.StudentService;
+import service.TeacherService;
 import service.UserService;
 
 import java.sql.SQLException;
@@ -27,8 +28,18 @@ public class Main {
                     }
                     //todo: mostrarMenu segun userType
 
+                    Teacher teacher = new Teacher(user);
+                    Integer optionSecondMenu = -1;
+                    optionSecondMenu = TeacherService.showTeacherMenu();
+                    switch(optionSecondMenu){
+                        case 1:{
+                            TeacherService.createHomework();
+                        }break;
+                    }
+
+
                     Student student = StudentService.getStudent(user);
-                    Integer optionSecondMenu = UserService.showStudentMenu();
+                    optionSecondMenu = UserService.showStudentMenu();
 
                     switch (optionSecondMenu){
                         case 1:{

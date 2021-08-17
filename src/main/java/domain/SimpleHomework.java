@@ -7,12 +7,30 @@ public class SimpleHomework extends Homework{
    private Number grade;
    private HomeworkStateEnum state;
    private boolean pass; // aprobar un examen es "pass an exam"
+   private int order;
+   private int tpId;
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
+    }
+
+    public int getTpId() {
+        return tpId;
+    }
+
+    public void setTpId(int tpId) {
+        this.tpId = tpId;
+    }
 
     public Date getDuedDate() {
         return duedDate;
     }
 
-    public void setDuedDate(Date duedDate) {
+    public void setDuedDate(String duedDate) {
         this.duedDate = duedDate;
     }
 
