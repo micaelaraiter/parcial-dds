@@ -1,6 +1,7 @@
 package service;
 
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.Scanner;
 
 public class TeacherService {
@@ -12,7 +13,7 @@ public class TeacherService {
         return console.nextInt();
     }
 
-    public static void createHomework() throws SQLException {
+    public static void createHomework() throws SQLException, ParseException {
         Scanner console = new Scanner(System.in);
         System.out.println("Ingresar \n" +
                 "true para crear un tp \n " +

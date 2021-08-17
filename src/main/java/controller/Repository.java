@@ -3,6 +3,9 @@ package controller;
 import domain.*;
 
 import java.sql.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,7 +76,7 @@ public class Repository {
 
     public static void selectHomeworkByStudentId(int studentId) throws SQLException {
         Connection connection = ConnectionToDB.initDb();
-        String sql = "select Homework.homework_id, Homework.title,Homework.description, Homework.date_dued,Homework.orden,Homework.state_id,Homework.tp_id from HomeworkStudent  INNER JOIN Homework ON HomeworkStudent.homework_id = Homework.homework_id where HomeworkStudent.student_id = ?";
+        String sql = "select Homework.homework_id, Homework.title,Homework.description, Homework.dued_date ,Homework.`order`,Homework.state_id,Homework.tp_id from HomeworkStudent  INNER JOIN Homework ON HomeworkStudent.homework_id = Homework.homework_id where HomeworkStudent.student_id = ?";
         PreparedStatement stm = connection.prepareStatement(sql);
         stm.setInt(1, studentId);
         ResultSet resultSet = stm.executeQuery();
@@ -82,6 +85,12 @@ public class Repository {
             Homework homework = new Homework();
             homework.setId(resultSet.getInt("homework_id"));
             homework.setTitle(resultSet.getString("title"));
+
+            // opcion por las dudas: ...select DATE_FORMAT(Homework.dued_date, '%d-%m-%y') from Homework...
+            //SimpleHomework simpleHomework = new SimpleHomework();
+            //DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            //java.util.Date birthday = formatter.parse(resultSet.getString("dued_date"));
+
             System.out.println("respuesta de la db");
 
         }
@@ -112,13 +121,13 @@ public class Repository {
     public static void createHomework(SimpleHomework simpleHomework) throws SQLException {
         Connection connection = ConnectionToDB.initDb();
         if (simpleHomework.getTpId() == 0) {
-            String sql = "INSERT INTO Homework (title,date_dued) values (?,?)";
+            String sql = "INSERT INTO Homework (title,dued_date) values (?,?)";
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setString(1, simpleHomework.getTitle());
             stm.setDate(2, (Date) simpleHomework.getDuedDate());
             stm.executeUpdate();
         } else {
-            String sql = "INSERT INTO Homework (title,date_dued,tp_id,orden) values (?,?,?,?)";
+            String sql = "INSERT INTO Homework (title,dued_date,tp_id,`order`) values (?,?,?,?)";
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setString(1, simpleHomework.getTitle());
             stm.setDate(2, (Date) simpleHomework.getDuedDate());
@@ -140,7 +149,7 @@ public class Repository {
             SimpleHomework homeworkMapper = new SimpleHomework();
             homeworkMapper.setId(id);
             homeworkMapper.setTitle(resultSet.getString("title"));
-            homeworkMapper.setOrder(resultSet.getInt("orden"));
+            homeworkMapper.setOrder(resultSet.getInt("`order`"));
             homeworkMapper.setTpId(resultSet.getInt("tp_id"));
             //homeworkMapper.setDuedDate(resultSet.getDate("dued_date"));
             homeworkMapper.setGrade(resultSet.getInt("grade"));

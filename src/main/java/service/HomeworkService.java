@@ -6,6 +6,10 @@ import domain.Tp;
 import domain.User;
 
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -24,13 +28,15 @@ public class HomeworkService {
         Repository.createTp(tp);
     }
 
-    public static void  createSimpleHomework(int tpId) throws SQLException {
+    public static void  createSimpleHomework(int tpId) throws SQLException, ParseException {
         SimpleHomework simpleHomework = new SimpleHomework();
         Scanner console = new Scanner(System.in);
          System.out.println("\nIngrese titulo: ");
         simpleHomework.setTitle(console.nextLine());
         System.out.println("\nIngrese fecha de vencimiento DD/MM/YYYY: ");
-        simpleHomework.setDuedDate(console.nextLine());
+        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        Date duedDate = formatter.parse(console.nextLine());
+        simpleHomework.setDuedDate(duedDate);
         if(tpId != 0){
             System.out.println("\nIngrese el orden: ");
             simpleHomework.setOrder(console.nextInt());

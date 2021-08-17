@@ -30,7 +30,7 @@ public class SimpleHomework extends Homework{
         return duedDate;
     }
 
-    public void setDuedDate(String duedDate) {
+    public void setDuedDate(Date duedDate) {
         this.duedDate = duedDate;
     }
 
