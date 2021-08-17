@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS Homework
     description VARCHAR(255),
     dued_date DATE,
     `order` INT,
-	tp_id INT NOT NULL,
+	tp_id INT,
 	foreign key (tp_id) references TP (tp_id)
 );
 
