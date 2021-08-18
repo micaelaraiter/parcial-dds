@@ -29,17 +29,8 @@ public class Main {
                     }
                     //todo: mostrarMenu segun userType
 
-                    Teacher teacher = new Teacher(user);
-                    Integer optionSecondMenu = -1;
-                    optionSecondMenu = TeacherService.showTeacherMenu();
-                    switch(optionSecondMenu){
-                        case 1:{
-                            TeacherService.createHomework();
-                        }break;
-                    }
-
-
                     Student student = StudentService.getStudent(user);
+                    Integer optionSecondMenu = -1;
                     optionSecondMenu = UserService.showStudentMenu();
 
                     switch (optionSecondMenu){
@@ -47,6 +38,14 @@ public class Main {
                             StudentService.getAllStudentHomework((Integer) student.getId());
                         }break;
                         case 2:{}break;
+                    }
+
+                    Teacher teacher = new Teacher(user);
+                    optionSecondMenu = TeacherService.showTeacherMenu();
+                    switch(optionSecondMenu){
+                        case 1:{
+                            TeacherService.createHomework();
+                        }break;
                     }
                 }
                 break;
