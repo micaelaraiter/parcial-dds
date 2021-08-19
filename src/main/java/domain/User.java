@@ -3,6 +3,11 @@ package domain;
 public class User {
     private Number id;
 
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
+
     public Number getId() {
         return id;
     }

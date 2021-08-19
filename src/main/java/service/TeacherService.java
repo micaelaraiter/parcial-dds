@@ -1,5 +1,7 @@
 package service;
 
+import service.entities.CreateHomeworkResult;
+
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Scanner;
@@ -13,17 +15,19 @@ public class TeacherService {
         return console.nextInt();
     }
 
-    public static void createHomework() throws SQLException, ParseException {
+    public static CreateHomeworkResult createHomework() throws SQLException, ParseException {
         Scanner console = new Scanner(System.in);
         System.out.println("Ingresar \n" +
                 "true para crear un tp \n " +
                 "false para crear una tarea ");
         boolean isATp = console.nextBoolean();
+        CreateHomeworkResult result = new CreateHomeworkResult(0,0);
         if(isATp){
-            HomeworkService.createTpHomework();
+            result.setTpId(HomeworkService.createTpHomework());
         } else{
-            HomeworkService.createSimpleHomework(0);
+            result.setSimpleHomeworkId(HomeworkService.createSimpleHomework(0));
         }
+        return result;
     }
 
 

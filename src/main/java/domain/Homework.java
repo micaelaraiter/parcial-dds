@@ -1,5 +1,6 @@
 package domain;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +8,10 @@ public class Homework {
     private Integer id; // homeworkId o tpId
     private String title;
     private List<Student> subscribers = new ArrayList<>();
+
+    public Homework(String title) {
+        this.title = title;
+    }
 
     public Integer getId() {
         return id;
@@ -33,7 +38,13 @@ public class Homework {
     }
 
     public void notifySubscribers(HomeworkNotification notification){
-        this.subscribers.forEach(subscriber -> subscriber.receiveHomeworkNotification(notification));
+        this.subscribers.forEach(subscriber -> {
+            try {
+                subscriber.receiveHomeworkNotification(notification);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public String getTitle() {

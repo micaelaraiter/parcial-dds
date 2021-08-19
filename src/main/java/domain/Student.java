@@ -2,6 +2,7 @@ package domain;
 
 import service.HomeworkService;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,7 +62,7 @@ public class Student {
         this.homeworks.remove(homework);
     }
 
-    public void receiveHomeworkNotification(HomeworkNotification notification) {
+    public void receiveHomeworkNotification(HomeworkNotification notification) throws SQLException {
         SimpleHomework homework = HomeworkService.getSimpleHomeworkById(notification.getId());
 
         if(homework == null){ // TODO: error

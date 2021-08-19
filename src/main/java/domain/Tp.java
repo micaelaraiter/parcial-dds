@@ -11,6 +11,10 @@ public class Tp extends Homework{
         return homeworks;
     }
 
+    public Tp(String title) {
+        super(title);
+    }
+
     public void setHomeworks(List<Homework> homeworks) {
         this.homeworks = homeworks;
     }

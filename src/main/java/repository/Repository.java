@@ -1,11 +1,8 @@
-package controller;
+package repository;
 
 import domain.*;
 
 import java.sql.*;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,11 +33,10 @@ public class Repository {
         stm.setString(1, email);
         ResultSet resultSet = stm.executeQuery();
         if (resultSet.next()) {
-            User userMapper = new User();
+            User userMapper = new User(resultSet.getString("email"), "fakepass");
             userMapper.setId(resultSet.getInt("user_id"));
-            userMapper.setEmail(resultSet.getString("email"));
             userMapper.setName(resultSet.getString("firstName"));
-            System.out.println("respuesta de la db" + userMapper.getEmail());
+            System.out.println("respuesta de la db: " + userMapper.getEmail());
             return userMapper;
         }
 
@@ -74,6 +70,36 @@ public class Repository {
         return null;
     }
 
+    public static List<Student> getAllStudentsFromCourse(String courseCode) throws SQLException {
+        Connection connection = ConnectionToDB.initDb();
+        String sql = "select s.student_id, u.firstName, u.lastName, c.name, u.email, u.password from Student s" +
+                " join Course c on s.course_id = c.course_id" +
+                " join User u on s.user_id = u.user_id" +
+                " where c.code = ?";
+        PreparedStatement stm = connection.prepareStatement(sql);
+        stm.setString(1, courseCode);
+        ResultSet resultSet = stm.executeQuery();
+
+        // Recorrer y usar cada línea retornada
+        List<Student> students = new ArrayList<>();
+        while (resultSet.next()) {
+            Student obj = new Student();
+            obj.setId(resultSet.getInt("student_id"));
+            Course course = new Course(resultSet.getString("name"), courseCode);
+            User user = new User(resultSet.getString("email"), resultSet.getString("password"));
+            user.setName(resultSet.getString("firstName"));;
+            user.setLastName(resultSet.getString("lastName"));
+
+            obj.setCourse(course);
+            obj.setUser(user);
+
+            System.out.println("student " + resultSet.getString("firstName"));
+            students.add(obj);
+        }
+        connection.close();
+        return students;
+    }
+
     public static void selectHomeworkByStudentId(int studentId) throws SQLException {
         Connection connection = ConnectionToDB.initDb();
         String sql = "select Homework.homework_id, Homework.title,Homework.description, Homework.dued_date ,Homework.`order`,HomeworkStudent.state_id,Homework.tp_id from HomeworkStudent  INNER JOIN Homework ON HomeworkStudent.homework_id = Homework.homework_id where HomeworkStudent.student_id = ?";
@@ -82,13 +108,10 @@ public class Repository {
         ResultSet resultSet = stm.executeQuery();
         List<Homework> homeworkList = new ArrayList<Homework>();
         while (resultSet.next()) {
-            SimpleHomework homework = new SimpleHomework();
+            SimpleHomework homework = new SimpleHomework(resultSet.getString("title"), resultSet.getDate("dued_date"), resultSet.getInt("order"), resultSet.getInt("tp_id"));
             homework.setId(resultSet.getInt("homework_id"));
-            homework.setTitle(resultSet.getString("title"));
-            homework.setDuedDate(resultSet.getDate("dued_date"));
-            homework.setOrder(resultSet.getInt("order"));
             homework.setState(HomeworkStateEnum.fromInteger(resultSet.getInt("state_id")));
-            homework.setTpId(resultSet.getInt("tp_id")); // TODO: deberiamos tener un objeto TP, no un tp_id en las clases
+            // TODO: deberiamos tener un objeto TP, no un tp_id en las clases
             // opcion por las dudas: ...select DATE_FORMAT(Homework.dued_date, '%d-%m-%y') from Homework...
             //SimpleHomework simpleHomework = new SimpleHomework();
             //DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -118,35 +141,63 @@ public class Repository {
         return null;
     }
 
-    public static void createTp(Tp tp) throws SQLException {
+    public static int createTp(Tp tp) throws SQLException {
         Connection connection = ConnectionToDB.initDb();
         String sql = "INSERT INTO TP (title) values (?)";
-        PreparedStatement stm = connection.prepareStatement(sql);
+        PreparedStatement stm = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         stm.setString(1, tp.getTitle());
         stm.executeUpdate();
+
+        // obtener último id generado
+        ResultSet generatedKeys = stm.getGeneratedKeys();
+        Integer id = -1;
+        if (generatedKeys.next()){
+            id = generatedKeys.getInt(1);
+            System.out.println("tp " + id.toString() + " creado con exito");
+        }
+        else {
+            id = 0;
+            System.out.println("error al crear tp");
+        }
         connection.close();
+        return id;
     }
 
 
-    public static void createHomework(SimpleHomework simpleHomework) throws SQLException {
+    public static int createHomework(SimpleHomework simpleHomework) throws SQLException {
         Connection connection = ConnectionToDB.initDb();
+        PreparedStatement stm;
+        String sql;
+
         if (simpleHomework.getTpId() == 0) {
-            String sql = "INSERT INTO Homework (title,dued_date) values (?,?)";
-            PreparedStatement stm = connection.prepareStatement(sql);
+            sql = "INSERT INTO Homework (title,dued_date) values (?,?)";
+            stm = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             stm.setString(1, simpleHomework.getTitle());
-            stm.setDate(2, (Date) simpleHomework.getDuedDate());
-            stm.executeUpdate();
+            stm.setDate(2, new java.sql.Date(simpleHomework.getDuedDate().getTime()));
         } else {
-            String sql = "INSERT INTO Homework (title,dued_date,tp_id,`order`) values (?,?,?,?)";
-            PreparedStatement stm = connection.prepareStatement(sql);
+            sql = "INSERT INTO Homework (title,dued_date,tp_id,`order`) values (?,?,?,?)";
+            stm = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             stm.setString(1, simpleHomework.getTitle());
             stm.setDate(2, (Date) simpleHomework.getDuedDate());
             stm.setInt(3, simpleHomework.getTpId());
             stm.setInt(4, simpleHomework.getOrder());
-            stm.executeUpdate();
         }
 
+        stm.executeUpdate();
+
+        // obtener último id generado
+        ResultSet generatedKeys = stm.getGeneratedKeys();
+        Integer id = -1;
+        if (generatedKeys.next()) {
+            id = generatedKeys.getInt(1);
+            System.out.println("tarea " + id.toString() + " creada con exito");
+        }
+        else {
+            id = 0;
+            System.out.println("error al crear tarea");
+        }
         connection.close();
+        return id;
     }
 
     public static SimpleHomework selectHomeworkById(int id) throws SQLException {
@@ -156,15 +207,26 @@ public class Repository {
         stm.setInt(1, id);
         ResultSet resultSet = stm.executeQuery();
         if (resultSet.next()) {
-            SimpleHomework homeworkMapper = new SimpleHomework();
+            SimpleHomework homeworkMapper = new SimpleHomework(resultSet.getString("title"), resultSet.getDate("dued_date"), resultSet.getInt("order"), resultSet.getInt("tp_id"));
             homeworkMapper.setId(id);
-            homeworkMapper.setTitle(resultSet.getString("title"));
-            homeworkMapper.setOrder(resultSet.getInt("`order`"));
-            homeworkMapper.setTpId(resultSet.getInt("tp_id"));
-            //homeworkMapper.setDuedDate(resultSet.getDate("dued_date"));
-            homeworkMapper.setGrade(resultSet.getInt("grade"));
-            //homeworkMapper.setState(resultSet.getInt("state_id"));
+            //homeworkMapper.setState(HomeworkStateEnum.fromInteger(resultSet.getInt("state_id"))); --> homework no tiene state_id, es homeworkStudent
             return homeworkMapper;
+        }
+
+        connection.close();
+        return null;
+    }
+
+    public static Tp selectTpById(int id) throws SQLException {
+        Connection connection = ConnectionToDB.initDb();
+        String sql = "select * from Tp where tp_id = ?";
+        PreparedStatement stm = connection.prepareStatement(sql);
+        stm.setInt(1, id);
+        ResultSet resultSet = stm.executeQuery();
+        if (resultSet.next()) {
+            Tp tp = new Tp(resultSet.getString("title"));
+            //TODO: el chiste es hacer un join para que devuelva las tareas que tiene
+            return tp;
         }
 
         connection.close();

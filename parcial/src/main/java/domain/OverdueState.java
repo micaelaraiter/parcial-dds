@@ -1,4 +1,4 @@
-package domain;bcc9a3f8
+package domain;
 
 public class OverdueState extends StateHomework{
 }

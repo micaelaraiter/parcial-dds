@@ -10,6 +10,15 @@ public class SimpleHomework extends Homework{
    private int order;
    private int tpId;
 
+    public SimpleHomework(String title, Date duedDate, int order, int tpId) {
+        super(title);
+        this.duedDate = duedDate;
+        this.state = HomeworkStateEnum.PENDING;
+        this.pass = false;
+        this.order = order;
+        this.tpId = tpId;
+    }
+
     public int getOrder() {
         return order;
     }

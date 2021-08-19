@@ -1,6 +1,6 @@
 package service;
 
-import controller.Repository;
+import repository.Repository;
 import domain.User;
 
 import java.sql.SQLException;
@@ -16,11 +16,11 @@ public class UserService {
 
     public static User showFormLogin() {
         Scanner console = new Scanner(System.in);
-        User userLogged = new User();
         System.out.println("\nIngrese email: ");
-        userLogged.setEmail(console.nextLine());
+        String mail = console.nextLine();
         System.out.println("\nIngrese contrasena: ");
-        userLogged.setPassword(console.nextLine());
+        String password = console.nextLine();
+        User userLogged = new User(mail, password);
         return userLogged;
     }
 
@@ -32,15 +32,21 @@ public class UserService {
 
     public static User showFormRegister() {
         Scanner console = new Scanner(System.in);
-        User userRegister = new User();
+
         System.out.println("\nIngrese email: ");
-        userRegister.setEmail(console.nextLine());
+        String mail = console.nextLine();
+
         System.out.println("\nIngrese contrasena: ");
-        userRegister.setPassword(console.nextLine());
+        String pass = console.nextLine();
+
+        User userRegister = new User(mail, pass);
+
         System.out.println("\nIngrese nombre: ");
         userRegister.setName(console.nextLine());
+
         System.out.println("\nIngrese apellido: ");
         userRegister.setLastName(console.nextLine());
+
         return userRegister;
     }
 
