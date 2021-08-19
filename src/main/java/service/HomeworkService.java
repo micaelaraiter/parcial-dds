@@ -1,8 +1,9 @@
 package service;
 
-import repository.Repository;
 import domain.SimpleHomework;
 import domain.Tp;
+import repository.SimpleHomeworkDAO;
+import repository.TpDAO;
 
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -14,11 +15,11 @@ import java.util.Scanner;
 public class HomeworkService {
 
     public static SimpleHomework getSimpleHomeworkById(Integer id) throws SQLException {
-        return Repository.selectHomeworkById(id);
+        return SimpleHomeworkDAO.selectHomeworkById(id);
     }
 
     public static Tp getTpById(Integer id) throws SQLException {
-        return Repository.selectTpById(id);
+        return TpDAO.selectTpById(id);
     }
 
     public static int createTpHomework() throws SQLException {
@@ -26,7 +27,7 @@ public class HomeworkService {
         System.out.println("\nIngrese titulo: ");
         String title = console.nextLine();
         Tp tp = new Tp(title);
-        return Repository.createTp(tp);
+        return TpDAO.createTp(tp);
     }
 
     public static int  createSimpleHomework(int tpId) throws SQLException, ParseException {
@@ -46,6 +47,6 @@ public class HomeworkService {
 
         SimpleHomework simpleHomework = new SimpleHomework(title, duedDate, order, tpId);
 
-        return Repository.createHomework(simpleHomework);
+        return SimpleHomeworkDAO.createHomework(simpleHomework);
     }
 }

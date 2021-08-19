@@ -1,7 +1,8 @@
 package service;
 
-import repository.Repository;
 import domain.User;
+import repository.StudentDAO;
+import repository.UserDAO;
 
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -10,7 +11,7 @@ public class UserService {
 
     public static User login(User user) throws SQLException {
         String email = user.getEmail();
-        return Repository.selectUserByEmail(email);
+        return UserDAO.selectUserByEmail(email);
 
     }
 
@@ -25,9 +26,9 @@ public class UserService {
     }
 
     public static void register(User user) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        Repository.registerUser(user);
-        User userCreated = Repository.selectUserByEmail(user.getEmail());
-        Repository.registerStudent((Integer) userCreated.getId());
+        UserDAO.registerUser(user);
+        User userCreated = UserDAO.selectUserByEmail(user.getEmail());
+        StudentDAO.registerStudent((Integer) userCreated.getId());
     }
 
     public static User showFormRegister() {
