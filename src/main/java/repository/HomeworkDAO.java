@@ -17,7 +17,7 @@ public class HomeworkDAO {
     public static void selectHomeworkByStudentId(int studentId) throws SQLException {
         Connection connection = ConnectionToDB.initDb();
         String sql = "select Homework.homework_id, Homework.title as HTitle,Homework.description as HDescription, Homework.dued_date ,Homework.`order`,State.description as state, " +
-                "Homework.tp_id, Tp.title as TTitle, Tp.description as TDescription, " +
+                "Homework.tp_id, Tp.title as TTitle, Tp.description as TDescription " +
                 "from HomeworkStudent  " +
                 "INNER JOIN Homework ON HomeworkStudent.homework_id = Homework.homework_id " +
                 "INNER JOIN Tp on Homework.tp_id = Tp.tp_id " +

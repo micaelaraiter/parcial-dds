@@ -14,6 +14,7 @@ public class School {
         this.id = id;
         this.name = name;
         this.address = address;
+        this.courses = new ArrayList<>();
     }
 
     public static School getInstance(Integer id, String name, String address) {

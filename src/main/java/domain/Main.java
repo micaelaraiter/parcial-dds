@@ -110,7 +110,8 @@ public class Main {
                         course = new Course(courseCode, courseCode);
                         School school = SchoolDAO.selectSchool();
                         school.addCourse(course);
-                        CourseDAO.insertCourse(course, school.getId());
+                        Integer courseId = CourseDAO.insertCourse(course, school.getId());
+                        course.setId(courseId);
                     }
                     course.addTeacher(teacher);
                     UserService.register(userRegistered, course);
@@ -125,10 +126,10 @@ public class Main {
                         course = new Course(courseCode, courseCode);
                         School school = SchoolDAO.selectSchool();
                         school.addCourse(course);
-                        CourseDAO.insertCourse(course, school.getId());
+                        Integer courseId = CourseDAO.insertCourse(course, school.getId());
+                        course.setId(courseId);
                     }
                     course.addStudent(student);
-
                     UserService.register(userRegistered, course);
                     student.setUser(userRegistered);
                 }

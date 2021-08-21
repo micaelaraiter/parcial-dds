@@ -39,7 +39,7 @@ public class SchoolDAO {
 
     public static School selectSchool() throws SQLException {
         Connection connection = ConnectionToDB.initDb();
-        String sql = "select s.name, s.address s.school_id from School s ";
+        String sql = "select s.name, s.address, s.school_id from School s ";
         PreparedStatement stm = connection.prepareStatement(sql);
         ResultSet resultSet = stm.executeQuery();
 

@@ -7,16 +7,14 @@ CREATE TABLE IF NOT EXISTS User
     firstName VARCHAR(255),
     lastName  VARCHAR(255),
     email     VARCHAR(255),
-    password  VARCHAR(255),
-    priority  TINYINT NOT NULL
+    password  VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS School
 (
 	school_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	name VARCHAR(255) NOT NULL,
-	direction VARCHAR(255) NOT NULL,
-	state_id INT NOT NULL
+	address VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Course
@@ -37,6 +35,8 @@ CREATE TABLE IF NOT EXISTS Teacher
 	foreign key (course_id) references Course (course_id)
 );
 
+
+
 CREATE TABLE IF NOT EXISTS Student
 (
     student_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -54,6 +54,7 @@ CREATE TABLE IF NOT EXISTS TP
     tp_father_id INT,
     foreign key (tp_father_id) references Tp (tp_id)
 );
+
 
 CREATE TABLE IF NOT EXISTS State
 (
