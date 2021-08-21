@@ -1,3 +1,4 @@
+CREATE DATABASE parcial;
 use parcial;
 
 CREATE TABLE IF NOT EXISTS User
@@ -12,9 +13,9 @@ CREATE TABLE IF NOT EXISTS User
 
 CREATE TABLE IF NOT EXISTS School
 (
-        school_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	name String NOT NULL,
-	direction String NOT NULL,
+	school_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	name VARCHAR(255) NOT NULL,
+	direction VARCHAR(255) NOT NULL,
 	state_id INT NOT NULL
 );
 
@@ -36,8 +37,6 @@ CREATE TABLE IF NOT EXISTS Teacher
 	foreign key (course_id) references Course (course_id)
 );
 
-
-
 CREATE TABLE IF NOT EXISTS Student
 (
     student_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -55,7 +54,6 @@ CREATE TABLE IF NOT EXISTS TP
     tp_father_id INT,
     foreign key (tp_father_id) references Tp (tp_id)
 );
-
 
 CREATE TABLE IF NOT EXISTS State
 (
@@ -85,7 +83,3 @@ CREATE TABLE IF NOT EXISTS HomeworkStudent
 	foreign key (state_id) references State (state_id),
 	foreign key (homework_id) references Homework (homework_id)
 );
-
-
-
-
