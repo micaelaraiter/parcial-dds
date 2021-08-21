@@ -7,12 +7,14 @@ public class Course {
     private Integer id;
     private String name;
     private String code;
-    private List<Student> students = new ArrayList<>();
-    private List<Teacher> teachers = new ArrayList<>();
+    private List<Student> students;
+    private List<Teacher> teachers;
 
     public Course(String name, String code) {
         this.name = name;
         this.code = code;
+        this.students = new ArrayList<>();
+        this.teachers = new ArrayList<>();
     }
 
     public Integer getId() {
@@ -39,7 +41,10 @@ public class Course {
         this.code = code;
     }
 
-    public void addStudent(Student student){ this.students.add(student); }
+    public void addStudent(Student student){
+        if(!this.students.contains(student))
+            this.students.add(student);
+    }
 
     public void addTeacher(Teacher teacher){ this.teachers.add(teacher); }
 

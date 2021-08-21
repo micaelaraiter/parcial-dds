@@ -1,16 +1,9 @@
 package domain;
 
-public class Teacher {
-    private static Teacher instance;
-    private User user;
-    private Course course;
+import java.util.Scanner;
 
-    public static Teacher getInstance() {
-        if (instance == null) {
-            instance = new Teacher();
-        }
-        return instance;
-    }
+public class Teacher {
+    private User user;
 
     public User getUser() {
         return user;
@@ -20,11 +13,16 @@ public class Teacher {
         this.user = user;
     }
 
-    public Course getCourse() {
-        return course;
-    }
+    public void reviewHomework(SimpleHomework homework) throws Exception {
+        Scanner console = new Scanner(System.in);
+        if(!homework.isAlreadyReviewed()){
+            System.out.println("Indique la nota que le pondra a la tarea " + homework.getTitle());
+            Integer grade = console.nextInt();
 
-    public void setCourse(Course course) {
-        this.course = course;
+            homework.reviewed(grade);
+        }
+        else{
+            System.out.println("La tarea " + homework.getTitle() + " ya fue corregida, le quedo una nota de " + homework.getGrade());
+        }
     }
 }

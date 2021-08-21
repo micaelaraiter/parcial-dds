@@ -1,15 +1,20 @@
 package domain;
 
 import service.HomeworkService;
+import service.MailingService;
+import service.StudentService;
+import service.TeacherService;
+import service.entities.MailContent;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Student {
     private Number id;
-    private Course course;
     private User user;
+    private List<Homework> homeworks = new ArrayList<>();
     private boolean hasPassed;
 
     public User getUser() {
@@ -20,22 +25,12 @@ public class Student {
         this.user = user;
     }
 
-    private List<Homework> homeworks = new ArrayList<>();
-
     public Number getId() {
         return id;
     }
 
     public void setId(Number id) {
         this.id = id;
-    }
-
-    public Course getCourse() {
-        return course;
-    }
-
-    public void setCourse(Course course) {
-        this.course = course;
     }
 
     public boolean hasPassed() {
@@ -62,27 +57,23 @@ public class Student {
         this.homeworks.remove(homework);
     }
 
-    public void receiveHomeworkNotification(HomeworkNotification notification) throws SQLException {
-        SimpleHomework homework = HomeworkService.getSimpleHomeworkById(notification.getId());
+    public void handHomework(SimpleHomework homework, String courseCode) throws Exception {
+        homework.hand();
 
-        if(homework == null){ // TODO: error
-            return;
-        }
+        List<Teacher> teachersInCourse = TeacherService.getAllTeacherFromCourse(courseCode);
+        String finalTitulo = "TAREA ENTREGADA";
 
-        switch(notification.getNewState()){
-            case PENDING:
-                this.addHomework(homework);
-                break;
-            case DELIVERED:
-                // la tarea fue entregada con exito!!!
-                // TODO: removeHomework? o capaz no hace falta
-                break;
-            case FINISHED:
-                this.setHasPassed(homework.isPass());
-                break;
-            case OVERDUE:
-                this.setHasPassed(false);
-                break;
+        if(teachersInCourse != null && !teachersInCourse.isEmpty()) {
+            teachersInCourse.forEach(teacher -> {
+                // idealmente el emailFrom seria "teacher.getUser().getEmail()" pero puse en Sengrid que se mande desde mi mail, sino habria que cambiar el apiKey de Sendgrid
+                MailContent mailContent = new MailContent(finalTitulo, "Hola " + teacher.getUser().getName() + " el alumno " + this.getUser().getName() + " entrego la tarea " + homework.getTitle(), "lmelamed@frba.utn.edu.ar", teacher.getUser().getEmail());
+                try {
+                    MailingService.sendMail(mailContent);
+                    System.out.println("mail enviado a " + teacher.getUser().getEmail());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
         }
     }
 }

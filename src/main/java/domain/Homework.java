@@ -1,57 +1,58 @@
 package domain;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 
-public class Homework {
-    private Integer id; // homeworkId o tpId
+public class Homework implements IHomework { // comportamiento default
     private String title;
-    private List<Student> subscribers = new ArrayList<>();
+    private String description;
+    private Date duedDate;
+    private Number grade;
+    private Integer id;
 
-    public Homework(String title) {
+    public Homework(String title, String description, Integer id) {
         this.title = title;
+        this.description = description;
+        this.id = id;
+        this.grade = -1;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getId(){
+        return this.id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Integer id){
         this.id = id;
     }
 
-    public List<Student> getSubscribers() {
-        return subscribers;
-    }
-
-    public void setSubscribers(List<Student> subscribers) {
-        this.subscribers = subscribers;
-    }
-
-    public void addSubscriber(Student subscriber) {
-        this.subscribers.add(subscriber);
-    }
-
-    public void removeSubscriber(Student subscriber) {
-        this.subscribers.remove(subscriber);
-    }
-
-    public void notifySubscribers(HomeworkNotification notification){
-        this.subscribers.forEach(subscriber -> {
-            try {
-                subscriber.receiveHomeworkNotification(notification);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
     public String getTitle() {
-        return title;
+        return this.title;
     }
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Date getDuedDate() {
+        return this.duedDate;
+    }
+
+    public void setDuedDate(Date date) {
+        this.duedDate = date;
+    }
+
+    public Number getGrade() {
+        return this.grade;
+    }
+
+    public void setGrade(Number grade) {
+        this.grade = grade;
     }
 }

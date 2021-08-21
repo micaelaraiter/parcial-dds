@@ -1,9 +1,14 @@
 package service;
 
+import domain.Student;
+import domain.Teacher;
+import repository.TeacherDAO;
+import repository.UsersDao;
 import service.entities.CreateHomeworkResult;
 
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.List;
 import java.util.Scanner;
 
 public class TeacherService {
@@ -15,7 +20,7 @@ public class TeacherService {
         return console.nextInt();
     }
 
-    public static CreateHomeworkResult createHomework() throws SQLException, ParseException {
+    public static CreateHomeworkResult createHomework(String courseCode) throws SQLException, ParseException {
         Scanner console = new Scanner(System.in);
         System.out.println("Ingresar \n" +
                 "true para crear un tp \n " +
@@ -25,10 +30,16 @@ public class TeacherService {
         if(isATp){
             result.setTpId(HomeworkService.createTpHomework());
         } else{
-            result.setSimpleHomeworkId(HomeworkService.createSimpleHomework(0));
+            System.out.println("Ingrese el ID del tp al cual pertenece");
+            Integer tpId = console.nextInt();
+            // TODO: validar que el tp exista
+            result.setSimpleHomeworkId(HomeworkService.createSimpleHomework(tpId, courseCode));
         }
         return result;
     }
 
+    public static List<Teacher> getAllTeacherFromCourse(String courseCode) throws SQLException {
+        return UsersDao.getAllTechersFromCourse(courseCode);
+    }
 
 }

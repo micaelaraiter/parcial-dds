@@ -1,6 +1,7 @@
 package repository;
 
 import domain.Student;
+import domain.Teacher;
 import domain.User;
 
 import java.sql.Connection;
@@ -8,11 +9,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class StudentDAO {
+public class TeacherDAO {
 
-    public static void registerStudent(int userID, int courseID) throws SQLException {
+    public static void registerTeacher(int userID, int courseID) throws SQLException {
         Connection connection = ConnectionToDB.initDb();
-        String sql = "INSERT INTO Student (user_id, course_id) values (?,?)";
+        String sql = "INSERT INTO Teacher (user_id, course_id) values (?,?)";
         PreparedStatement stm = connection.prepareStatement(sql);
         stm.setInt(1, userID);
         stm.setInt(2, courseID);
@@ -20,23 +21,20 @@ public class StudentDAO {
         connection.close();
     }
 
-    public static Student selectStudentByUser(User user) throws SQLException {
+    public static Teacher selectTeacherByUser(User user) throws SQLException {
         Connection connection = ConnectionToDB.initDb();
-        String sql = "select * from Student where user_id = ?";
+        String sql = "select * from Teacher where user_id = ?";
         PreparedStatement stm = connection.prepareStatement(sql);
         stm.setInt(1, (Integer) user.getId());
         ResultSet resultSet = stm.executeQuery();
         if (resultSet.next()) {
-            Student studentMapper = new Student();
-            studentMapper.setId(resultSet.getInt("student_id"));
-            studentMapper.setUser(user);
-            return studentMapper;
+            Teacher teacher = new Teacher();
+            //teacher.setId(resultSet.getInt("teacher_id"));
+            teacher.setUser(user);
+            return teacher;
         }
 
         connection.close();
         return null;
     }
-
-
-
 }

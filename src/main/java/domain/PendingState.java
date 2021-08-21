@@ -2,7 +2,7 @@ package domain;
 
 import java.util.Date;
 
-public class PendingSimple extends HomeworkState {
+public class PendingState extends HomeworkState {
     @Override
     public boolean isAvailableToSendHomework(Student student, SimpleHomework homework) {
         if(student.getHomeworks().contains(homework)){
@@ -14,15 +14,11 @@ public class PendingSimple extends HomeworkState {
     @Override
     public void changeState(SimpleHomework homework) throws Exception {
         if(homework.getDuedDate().before(new Date())){
-            homework.setState(HomeworkStateEnum.DELIVERED);
+            homework.setState(new DeliveredState());
+            homework.notifySubscribers();
         }
         else{
-            homework.setState(HomeworkStateEnum.OVERDUE);
+            homework.setState(new OverdueState());
         }
-    }
-
-    @Override
-    public HomeworkStateEnum getState() {
-        return HomeworkStateEnum.PENDING;
     }
 }

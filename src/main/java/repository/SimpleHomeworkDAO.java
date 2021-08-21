@@ -1,33 +1,36 @@
 package repository;
 
 import domain.SimpleHomework;
+import domain.Tp;
 
 import java.sql.*;
 
 public class SimpleHomeworkDAO {
     public static SimpleHomework selectHomeworkById(int id) throws SQLException {
         Connection connection = ConnectionToDB.initDb();
-        String sql = "select * from Homework where homework_id = ?";
+        String sql = "select title, description, tp_id, dued_date, `order` from Homework where homework_id = ?";
         PreparedStatement stm = connection.prepareStatement(sql);
         stm.setInt(1, id);
         ResultSet resultSet = stm.executeQuery();
         if (resultSet.next()) {
-            SimpleHomework homeworkMapper = new SimpleHomework(resultSet.getString("title"), resultSet.getDate("dued_date"), resultSet.getInt("order"), resultSet.getInt("tp_id"));
-            homeworkMapper.setId(id);
+            SimpleHomework homework = new SimpleHomework(resultSet.getString("title"), resultSet.getString("description"), resultSet.getInt("tp_id"));
+            homework.setDuedDate(resultSet.getDate("dued_date"));
+            homework.setOrder(resultSet.getInt("order"));
+            homework.setId(id);
             //homeworkMapper.setState(HomeworkStateEnum.fromInteger(resultSet.getInt("state_id"))); --> homework no tiene state_id, es homeworkStudent
-            return homeworkMapper;
+            return homework;
         }
 
         connection.close();
         return null;
     }
 
-    public static int createHomework(SimpleHomework simpleHomework) throws SQLException {
+    public static int createHomework(SimpleHomework simpleHomework, Tp tp) throws SQLException {
         Connection connection = ConnectionToDB.initDb();
         PreparedStatement stm;
         String sql;
 
-        if (simpleHomework.getTpId() == 0) {
+        if (tp == null) {
             sql = "INSERT INTO Homework (title,dued_date) values (?,?)";
             stm = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             stm.setString(1, simpleHomework.getTitle());
@@ -37,7 +40,7 @@ public class SimpleHomeworkDAO {
             stm = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             stm.setString(1, simpleHomework.getTitle());
             stm.setDate(2, (Date) simpleHomework.getDuedDate());
-            stm.setInt(3, simpleHomework.getTpId());
+            stm.setInt(3, tp.getId());
             stm.setInt(4, simpleHomework.getOrder());
         }
 

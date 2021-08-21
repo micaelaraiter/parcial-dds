@@ -2,7 +2,7 @@ package domain;
 
 public class HomeworkNotification {
     private Integer id;
-    private HomeworkStateEnum newState;
+    private HomeworkState newState;
 
     public Integer getId() {
         return id;
@@ -12,11 +12,11 @@ public class HomeworkNotification {
         this.id = id;
     }
 
-    public HomeworkStateEnum getNewState() {
+    public HomeworkState getNewState() {
         return newState;
     }
 
-    public void setNewState(HomeworkStateEnum newState) {
+    public void setNewState(HomeworkState newState) {
         this.newState = newState;
     }
 }

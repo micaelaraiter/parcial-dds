@@ -1,5 +1,7 @@
 package domain;
 
+import repository.CourseDAO;
+import repository.SchoolDAO;
 import service.*;
 import service.entities.CreateHomeworkResult;
 import service.entities.MailContent;
@@ -12,10 +14,14 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, ParseException, IOException {
+        SchoolDAO.insertSchool("UTN", "Medrano 951");
 
         Integer option = -1;
         while (option != 0) {
             Scanner console = new Scanner(System.in);
+            System.out.println("Indique el codigo de curso para el cual quiere realizar operaciones");
+            String courseCode = console.nextLine();
+
             System.out.println("Ingresa un numero segun la operacion a realizar \n " +
                     "0.Salir\n " +
                     "1.Inicia Sesion como alumno \n " +
@@ -57,7 +63,7 @@ public class Main {
                     optionSecondMenu = TeacherService.showTeacherMenu();
                     switch(optionSecondMenu) {
                         case 1: {
-                            CreateHomeworkResult result = TeacherService.createHomework();
+                            CreateHomeworkResult result = TeacherService.createHomework(courseCode);
                             String titulo = "";
                             boolean esSimple = false;
 
@@ -76,7 +82,7 @@ public class Main {
 
                             //List<Student> studentsInCourse = teacher.getCourse().getStudents();
                             //List<Student> studentsInCourse = StudentService.getAllStudentsFromCourse(teacher.getCourse().getCode());
-                            List<Student> studentsInCourse = StudentService.getAllStudentsFromCourse("K3002");
+                            List<Student> studentsInCourse = StudentService.getAllStudentsFromCourse(courseCode);
                             String finalTitulo = titulo;
 
                             if(studentsInCourse != null && !studentsInCourse.isEmpty()) {
@@ -97,28 +103,34 @@ public class Main {
                     break;
                 }
                 case 3: {
-                    User userRegistered = UserService.showFormRegister();
-                    UserService.register(userRegistered);
                     Teacher teacher = new Teacher();
-                    teacher.setUser(userRegistered);
-                    System.out.println("Ingrese el codigo del curso asignado"); //todo: habria que ver si ya existe en la db o hay que crearlo, por ahora lo creo siempre
-                    String courseCode = console.nextLine();
-
-                    Course course = new Course(courseCode, courseCode);
-                    teacher.setCourse(course);
+                    User userRegistered = UserService.showFormRegister();
+                    Course course = CourseDAO.selectCourseByCode(courseCode);
+                    if(course == null){
+                        course = new Course(courseCode, courseCode);
+                        School school = SchoolDAO.selectSchool();
+                        school.addCourse(course);
+                        CourseDAO.insertCourse(course, school.getId());
+                    }
                     course.addTeacher(teacher);
+                    UserService.register(userRegistered, course);
+                    teacher.setUser(userRegistered);
+
                 }
                 case 4: {
-                    User userRegistered = UserService.showFormRegister();
-                    UserService.register(userRegistered);
                     Student student = new Student();
-                    student.setUser(userRegistered);
-                    System.out.println("Ingrese el codigo del curso al que asiste"); //todo: habria que ver si ya existe en la db o hay que crearlo, por ahora lo creo siempre
-                    String courseCode = console.nextLine();
-
-                    Course course = new Course(courseCode, courseCode);
-                    student.setCourse(course);
+                    User userRegistered = UserService.showFormRegister();
+                    Course course = CourseDAO.selectCourseByCode(courseCode);
+                    if(course == null){
+                        course = new Course(courseCode, courseCode);
+                        School school = SchoolDAO.selectSchool();
+                        school.addCourse(course);
+                        CourseDAO.insertCourse(course, school.getId());
+                    }
                     course.addStudent(student);
+
+                    UserService.register(userRegistered, course);
+                    student.setUser(userRegistered);
                 }
                 break;
                 default:

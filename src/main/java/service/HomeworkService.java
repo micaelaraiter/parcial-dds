@@ -1,16 +1,15 @@
 package service;
 
-import domain.SimpleHomework;
-import domain.Tp;
+import domain.*;
 import repository.SimpleHomeworkDAO;
 import repository.TpDAO;
+import repository.UsersDao;
 
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Scanner;
+import java.util.*;
 
 public class HomeworkService {
 
@@ -26,14 +25,21 @@ public class HomeworkService {
         Scanner console = new Scanner(System.in);
         System.out.println("\nIngrese titulo: ");
         String title = console.nextLine();
-        Tp tp = new Tp(title);
-        return TpDAO.createTp(tp);
+        System.out.println("\nIngrese descripcion: ");
+        String description = console.nextLine();
+        Tp tp = new Tp(title, description, 0, new ArrayList<>());
+        int tpId = TpDAO.createTp(tp);
+        tp.setId(tpId);
+        return  tpId;
     }
 
-    public static int  createSimpleHomework(int tpId) throws SQLException, ParseException {
+    public static int  createSimpleHomework(int tpId, String courseCode) throws SQLException, ParseException {
         Scanner console = new Scanner(System.in);
         System.out.println("\nIngrese titulo: ");
         String title = console.nextLine();
+
+        System.out.println("\nIngrese descripcion: ");
+        String description = console.nextLine();
 
         System.out.println("\nIngrese fecha de vencimiento DD/MM/YYYY: ");
         DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -45,8 +51,32 @@ public class HomeworkService {
             order = console.nextInt();
         }
 
-        SimpleHomework simpleHomework = new SimpleHomework(title, duedDate, order, tpId);
+        SimpleHomework simpleHomework = new SimpleHomework(title, description, tpId);
+        simpleHomework.setDuedDate(duedDate);
+        simpleHomework.setOrder(order);
 
-        return SimpleHomeworkDAO.createHomework(simpleHomework);
+        Tp tp = TpDAO.selectTpById(tpId);
+        if(tp != null){
+            tp.addHomework(simpleHomework);
+            return SimpleHomeworkDAO.createHomework(simpleHomework, tp);
+        }
+
+        List<Teacher> teachers = UsersDao.getAllTechersFromCourse(courseCode);
+        simpleHomework.setSubscribers(teachers);
+
+        return SimpleHomeworkDAO.createHomework(simpleHomework, null);
+    }
+
+    public static HomeworkState getHomeworkStateByDescription(String description){
+        switch (description.toUpperCase(Locale.ROOT)){
+            case "DELIVERED":
+                return new DeliveredState();
+            case "OVERDUE":
+                return new OverdueState();
+            case "FINISHED":
+                return new FinishedState();
+            default:
+                return new PendingState();
+        }
     }
 }

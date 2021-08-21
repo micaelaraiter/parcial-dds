@@ -2,6 +2,10 @@ package domain;
 
 public class User {
     private Number id;
+    private String password; //todo: deberiamos hashear la contra y usar jwt
+    private String name;
+    private String lastName;
+    private String email;
 
     public User(String email, String password) {
         this.email = email;
@@ -15,10 +19,6 @@ public class User {
     public void setId(Number id) {
         this.id = id;
     }
-
-    private String name;
-    private String lastName;
-    private String email;
 
     public String getName() {
         return name;
@@ -52,5 +52,4 @@ public class User {
         this.password = password;
     }
 
-    private String password; //todo: deberiamos hashear la contra y usar jwt
 }

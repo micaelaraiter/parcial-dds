@@ -3,6 +3,7 @@ package repository;
 import domain.Tp;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class TpDAO {
     public static int createTp(Tp tp) throws SQLException {
@@ -29,12 +30,12 @@ public class TpDAO {
 
     public static Tp selectTpById(int id) throws SQLException {
         Connection connection = ConnectionToDB.initDb();
-        String sql = "select * from Tp where tp_id = ?";
+        String sql = "select tp_id, title, description, from Tp where tp_id = ?";
         PreparedStatement stm = connection.prepareStatement(sql);
         stm.setInt(1, id);
         ResultSet resultSet = stm.executeQuery();
         if (resultSet.next()) {
-            Tp tp = new Tp(resultSet.getString("title"));
+            Tp tp = new Tp(resultSet.getString("title"), resultSet.getString("description"), resultSet.getInt("tp_id"), new ArrayList<>());
             //TODO: el chiste es hacer un join para que devuelva las tareas que tiene
             return tp;
         }

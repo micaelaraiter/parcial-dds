@@ -19,10 +19,10 @@ VALUES(1,1,1),
 (2,2,1);
 
 INSERT INTO `parcial`.`state`(`state_id`,`description`)
-VALUES(1,'PENDIENTE'),
-(2,'ENTREGADA'),
-(3,'FINALIZADA'),
-(4,'VENCIDA');
+VALUES(1,'PENDING'),
+(2,'DELIVERED'),
+(3,'FINISHED'),
+(4,'OVERDUE');
 
 INSERT INTO `parcial`.`tp`(`tp_id`,`title`,`final_grade`)
 VALUES (1,'TP 1',NULL);

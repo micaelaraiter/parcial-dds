@@ -1,69 +1,74 @@
 package domain;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
-public class SimpleHomework extends Homework{
-   private Date duedDate;
-   private Number grade;
-   private HomeworkStateEnum state;
-   private boolean pass; // aprobar un examen es "pass an exam"
-   private int order;
-   private int tpId;
+public class SimpleHomework extends Homework {
+    private HomeworkState state;
+    private boolean pass; // aprobar un examen es "pass an exam"
+    private int order;
+    private List<Teacher> subscribers = new ArrayList<>();
 
-    public SimpleHomework(String title, Date duedDate, int order, int tpId) {
-        super(title);
-        this.duedDate = duedDate;
-        this.state = HomeworkStateEnum.PENDING;
-        this.pass = false;
-        this.order = order;
-        this.tpId = tpId;
+    public SimpleHomework(String title, String description, Integer id) {
+        super(title, description, id);
+    }
+
+    public HomeworkState getState() {
+        return this.state;
+    }
+
+    public void setState(HomeworkState state) {
+        this.state = state;
+    }
+
+    public boolean isPass() {
+        return this.pass;
+    }
+
+    public void setPass(boolean pass) {
+        this.pass = pass;
     }
 
     public int getOrder() {
-        return order;
+        return this.order;
     }
 
     public void setOrder(int order) {
         this.order = order;
     }
 
-    public int getTpId() {
-        return tpId;
+    public List<Teacher> getSubscribers() {
+        return subscribers;
     }
 
-    public void setTpId(int tpId) {
-        this.tpId = tpId;
+    public void setSubscribers(List<Teacher> subscribers) {
+        this.subscribers = subscribers;
     }
 
-    public Date getDuedDate() {
-        return duedDate;
+    public void hand() throws Exception {
+        this.state.changeState(this);
     }
 
-    public void setDuedDate(Date duedDate) {
-        this.duedDate = duedDate;
+    public void reviewed(Number grade) throws Exception {
+        boolean pass = grade.intValue() >= 6 ? true : false;
+
+        this.setGrade(grade);
+        this.setPass(pass);
+
+        this.state.changeState(this);
     }
 
-    public Number getGrade() {
-        return grade;
+    public boolean isAlreadyReviewed(){
+        return this.getGrade().intValue() != -1;
     }
 
-    public void setGrade(Number grade) {
-        this.grade = grade;
-    }
-
-    public HomeworkStateEnum getState() {
-        return state;
-    }
-
-    public void setState(HomeworkStateEnum state) {
-        this.state = state;
-    }
-
-    public boolean isPass() {
-        return pass;
-    }
-
-    public void setPass(boolean pass) {
-        this.pass = pass;
+    public void notifySubscribers(){
+        this.subscribers.forEach(subscriber -> {
+            try {
+                subscriber.reviewHomework(this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 }
