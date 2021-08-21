@@ -57,6 +57,11 @@ CREATE TABLE IF NOT EXISTS TP
 );
 
 
+CREATE TABLE IF NOT EXISTS State
+(
+    state_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    description VARCHAR(255)
+);
 
 CREATE TABLE IF NOT EXISTS Homework
 (
@@ -74,9 +79,10 @@ CREATE TABLE IF NOT EXISTS HomeworkStudent
  	homework_student_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	student_id INT NOT NULL,
 	homework_id INT NOT NULL,
-	state VARCHAR(255),
+	state_id INT NOT NULL,
    	grade INT,
 	foreign key (student_id) references Student (student_id),
+	foreign key (state_id) references State (state_id),
 	foreign key (homework_id) references Homework (homework_id)
 );
 
