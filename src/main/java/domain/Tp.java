@@ -33,4 +33,13 @@ public class Tp extends Homework{
         return this.homeworks.stream()
                 .map(homework -> homework.getDuedDate()).max(Date::compareTo).get();
     }
+
+    @Override
+    public Number getGrade() {
+        return this.homeworks.stream()
+                .map(homework -> homework.getGrade().intValue())
+                .mapToDouble(d -> d)
+                .average()
+                .orElse(0.0);
+    }
 }

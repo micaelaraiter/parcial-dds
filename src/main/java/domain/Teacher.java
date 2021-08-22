@@ -1,5 +1,7 @@
 package domain;
 
+import service.StudentService;
+
 import java.util.Scanner;
 
 public class Teacher {
@@ -19,7 +21,11 @@ public class Teacher {
             System.out.println("Indique la nota que le pondra a la tarea " + homework.getTitle());
             Integer grade = console.nextInt();
 
-            homework.reviewed(grade);
+            System.out.println("Indique el mail del usuario al que le corregira ");
+            String email = console.nextLine();
+            Student student = StudentService.getStudentByEmail(email);
+
+            homework.reviewed(grade, student);
         }
         else{
             System.out.println("La tarea " + homework.getTitle() + " ya fue corregida, le quedo una nota de " + homework.getGrade());

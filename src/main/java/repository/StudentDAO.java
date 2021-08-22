@@ -37,6 +37,30 @@ public class StudentDAO {
         return null;
     }
 
+    public static Student selectStudentByEmail(String mail) throws SQLException {
+        Connection connection = ConnectionToDB.initDb();
+        String sql = "select s.*, u.lastName, u.firstName from Student s " +
+                "INNER JOIN User u on s.user_id = u.user_id" +
+                "where u.email = ?";
+        PreparedStatement stm = connection.prepareStatement(sql);
+        stm.setString(1, mail);
+        ResultSet resultSet = stm.executeQuery();
+        if (resultSet.next()) {
+            Student studentMapper = new Student();
+            studentMapper.setId(resultSet.getInt("student_id"));
+
+            User user = new User(mail, "");
+            user.setName(resultSet.getString("firstName"));
+            user.setName(resultSet.getString("lastName"));
+
+            studentMapper.setUser(user);
+            return studentMapper;
+        }
+
+        connection.close();
+        return null;
+    }
+
 
 
 }

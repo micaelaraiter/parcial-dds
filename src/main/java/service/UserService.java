@@ -3,6 +3,7 @@ package service;
 import domain.Course;
 import domain.User;
 import repository.StudentDAO;
+import repository.TeacherDAO;
 import repository.UserDAO;
 
 import java.sql.SQLException;
@@ -26,10 +27,16 @@ public class UserService {
         return userLogged;
     }
 
-    public static void register(User user, Course course) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public static void registerStudent(User user, Course course) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         UserDAO.registerUser(user);
         User userCreated = UserDAO.selectUserByEmail(user.getEmail());
         StudentDAO.registerStudent((Integer) userCreated.getId(), course.getId());
+    }
+
+    public static void registerTeacher(User user, Course course) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        UserDAO.registerUser(user);
+        User userCreated = UserDAO.selectUserByEmail(user.getEmail());
+        TeacherDAO.registerTeacher((Integer) userCreated.getId(), course.getId());
     }
 
     public static User showFormRegister() {

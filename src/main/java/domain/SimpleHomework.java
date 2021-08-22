@@ -45,17 +45,17 @@ public class SimpleHomework extends Homework {
         this.subscribers = subscribers;
     }
 
-    public void hand() throws Exception {
-        this.state.changeState(this);
+    public void hand(Student student) throws Exception {
+        this.state.changeState(this, student);
     }
 
-    public void reviewed(Number grade) throws Exception {
+    public void reviewed(Number grade, Student student) throws Exception {
         boolean pass = grade.intValue() >= 6 ? true : false;
 
         this.setGrade(grade);
         this.setPass(pass);
 
-        this.state.changeState(this);
+        this.state.changeState(this, student);
     }
 
     public boolean isAlreadyReviewed(){

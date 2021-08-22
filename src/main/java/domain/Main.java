@@ -1,5 +1,6 @@
 package domain;
 
+import com.twilio.twiml.voice.Sim;
 import repository.CourseDAO;
 import repository.SchoolDAO;
 import service.*;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, ParseException, IOException {
+    public static void main(String[] args) throws Exception {
         SchoolDAO.insertSchool("UTN", "Medrano 951");
 
         Integer option = -1;
@@ -26,8 +27,8 @@ public class Main {
                     "0.Salir\n " +
                     "1.Inicia Sesion como alumno \n " +
                     "2.Inicia Sesion como profesor \n " +
-                    "3.Registrarse como alumno \n" +
-                    "4.Registrarse como profesor");
+                    "3.Registrarse como profesor \n " +
+                    "4.Registrarse como alumno");
 
             option = console.nextInt();
             switch (option) {
@@ -37,17 +38,25 @@ public class Main {
                     if(user == null){
                         System.out.println("No se ha encontrado el email ingresado");
                     }
-                    //todo: mostrarMenu segun userType
 
                     Student student = StudentService.getStudent(user);
                     Integer optionSecondMenu = -1;
                     optionSecondMenu = UserService.showStudentMenu();
 
+                    List<Homework> homework = StudentService.getAllStudentHomework((Integer) student.getId());
+                    System.out.println("size homework = " + homework.size());
+                    student.setHomeworks(homework);
+
                     switch (optionSecondMenu){
                         case 1:{
-                            StudentService.getAllStudentHomework((Integer) student.getId());
+                            student.getHomeworks().forEach(homework1 -> {
+                                System.out.println("TAREA: " + homework1.getId().toString() + " \n TITULO: " + homework1.getTitle() +
+                                        "\n FECHA: " + homework1.getDuedDate().toString());
+                            });
                         }break;
-                        case 2:{}break;
+                        case 2:{
+                            StudentService.handHomework(student, courseCode);
+                        }break;
                     }
                 }
                 break;
@@ -99,6 +108,13 @@ public class Main {
                             }
                         }
                         break;
+                        case 2: {
+                            Scanner console2 = new Scanner(System.in);
+                            System.out.println("Ingresa el titulo de la tarea a coregir");
+                            SimpleHomework homework = HomeworkService.getSimpleHomeworkByTitle(console2.nextLine());
+                            teacher.reviewHomework(homework);
+                        }
+                        break;
                     }
                     break;
                 }
@@ -114,10 +130,10 @@ public class Main {
                         course.setId(courseId);
                     }
                     course.addTeacher(teacher);
-                    UserService.register(userRegistered, course);
+                    UserService.registerTeacher(userRegistered, course);
                     teacher.setUser(userRegistered);
-
                 }
+                break;
                 case 4: {
                     Student student = new Student();
                     User userRegistered = UserService.showFormRegister();
@@ -130,7 +146,7 @@ public class Main {
                         course.setId(courseId);
                     }
                     course.addStudent(student);
-                    UserService.register(userRegistered, course);
+                    UserService.registerStudent(userRegistered, course);
                     student.setUser(userRegistered);
                 }
                 break;

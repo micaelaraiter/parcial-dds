@@ -84,3 +84,9 @@ CREATE TABLE IF NOT EXISTS HomeworkStudent
 	foreign key (state_id) references State (state_id),
 	foreign key (homework_id) references Homework (homework_id)
 );
+
+INSERT INTO `parcial`.`state`(`state_id`,`description`)
+VALUES(1,'PENDING'),
+(2,'DELIVERED'),
+(3,'FINISHED'),
+(4,'OVERDUE');

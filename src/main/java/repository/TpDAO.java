@@ -30,7 +30,7 @@ public class TpDAO {
 
     public static Tp selectTpById(int id) throws SQLException {
         Connection connection = ConnectionToDB.initDb();
-        String sql = "select tp_id, title, description, from Tp where tp_id = ?";
+        String sql = "select tp_id, title, description from Tp where tp_id = ?";
         PreparedStatement stm = connection.prepareStatement(sql);
         stm.setInt(1, id);
         ResultSet resultSet = stm.executeQuery();

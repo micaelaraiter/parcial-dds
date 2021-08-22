@@ -1,8 +1,6 @@
 package service;
 
-import domain.Student;
 import domain.Teacher;
-import repository.TeacherDAO;
 import repository.UsersDao;
 import service.entities.CreateHomeworkResult;
 
@@ -39,7 +37,7 @@ public class TeacherService {
     }
 
     public static List<Teacher> getAllTeacherFromCourse(String courseCode) throws SQLException {
-        return UsersDao.getAllTechersFromCourse(courseCode);
+        return UsersDao.getAllTeachersFromCourse(courseCode);
     }
 
 }

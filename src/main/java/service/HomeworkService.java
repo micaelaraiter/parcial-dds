@@ -1,6 +1,7 @@
 package service;
 
 import domain.*;
+import repository.HomeworkDAO;
 import repository.SimpleHomeworkDAO;
 import repository.TpDAO;
 import repository.UsersDao;
@@ -19,6 +20,10 @@ public class HomeworkService {
 
     public static Tp getTpById(Integer id) throws SQLException {
         return TpDAO.selectTpById(id);
+    }
+
+    public static SimpleHomework getSimpleHomeworkByTitle(String title) throws SQLException {
+        return HomeworkDAO.selectHomeworkByTitle(title);
     }
 
     public static int createTpHomework() throws SQLException {
@@ -58,13 +63,13 @@ public class HomeworkService {
         Tp tp = TpDAO.selectTpById(tpId);
         if(tp != null){
             tp.addHomework(simpleHomework);
-            return SimpleHomeworkDAO.createHomework(simpleHomework, tp);
+            return SimpleHomeworkDAO.createHomework(simpleHomework, tp, courseCode);
         }
 
-        List<Teacher> teachers = UsersDao.getAllTechersFromCourse(courseCode);
+        List<Teacher> teachers = UsersDao.getAllTeachersFromCourse(courseCode);
         simpleHomework.setSubscribers(teachers);
 
-        return SimpleHomeworkDAO.createHomework(simpleHomework, null);
+        return SimpleHomeworkDAO.createHomework(simpleHomework, null, courseCode);
     }
 
     public static HomeworkState getHomeworkStateByDescription(String description){

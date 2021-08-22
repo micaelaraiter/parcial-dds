@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Student {
-    private Number id;
+    private Integer id;
     private User user;
     private List<Homework> homeworks = new ArrayList<>();
     private boolean hasPassed;
@@ -25,11 +25,11 @@ public class Student {
         this.user = user;
     }
 
-    public Number getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Number id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -58,7 +58,12 @@ public class Student {
     }
 
     public void handHomework(SimpleHomework homework, String courseCode) throws Exception {
-        homework.hand();
+        if(!homework.getState().isAvailableToSendHomework(this, homework)){
+            System.out.println("NO PODES ENTREGAR LA TAREA - tenia fecha de vencimiento " + homework.getDuedDate().toString());
+            return;
+        }
+
+        homework.hand(this);
 
         List<Teacher> teachersInCourse = TeacherService.getAllTeacherFromCourse(courseCode);
         String finalTitulo = "TAREA ENTREGADA";

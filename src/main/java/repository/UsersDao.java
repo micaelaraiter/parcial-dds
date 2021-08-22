@@ -44,11 +44,11 @@ public class UsersDao {
         return students;
     }
 
-    public static List<Teacher> getAllTechersFromCourse(String courseCode) throws SQLException {
+    public static List<Teacher> getAllTeachersFromCourse(String courseCode) throws SQLException {
         Connection connection = ConnectionToDB.initDb();
         String sql = "select t.teacher_id, u.firstName, u.lastName, c.name, u.email, u.password from Teacher t" +
-                " join Course c on s.course_id = c.course_id" +
-                " join User u on s.user_id = u.user_id" +
+                " join Course c on t.course_id = c.course_id" +
+                " join User u on t.user_id = u.user_id " +
                 " where c.code = ?";
         PreparedStatement stm = connection.prepareStatement(sql);
         stm.setString(1, courseCode);
