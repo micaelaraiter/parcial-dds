@@ -2,12 +2,15 @@ use parcial;
 
 -- fake data --
 
-INSERT INTO User (user_id,firstName,lastName,email,password,priority) -- a proposito va el user_id, para la fake data nomas
-VALUES (1, 'Micaela', 'Raiter', 'mraiter@frba.utn.edu.ar', 'asd123asd',2),
- (2, 'Lucila', 'Melamed', 'lmelamed@frba.utn.edu.ar', 'asd123asd',2),
- (3, 'Luciano', 'Straccia', 'lstraccia@frba.utn.edu.ar', 'asd123asd',1);
- 
- -- descubri que mysql te arma solo los inserts, boton derecho, copy to clipboard, insert statement
+-- USAR ESTE SCRIPT PARA INGRESAR INFORMACION BASICA A LA DB, PARA QUE LAS PRUEBAS SEAN MAS SENCILLAS --
+
+-- la escuela se crea sola en el codigo --
+
+INSERT INTO User (user_id,firstName,lastName,email,password) -- a proposito va el user_id, para la fake data nomas
+VALUES (1, 'Micaela', 'Raiter', 'mraiter@frba.utn.edu.ar', 'asd123asd'),
+ (2, 'Lucila', 'Melamed', 'lmelamed@frba.utn.edu.ar', 'asd123asd'),
+ (3, 'Luciano', 'Straccia', 'lstraccia@frba.utn.edu.ar', 'asd123asd');
+
 INSERT INTO `parcial`.`teacher` (`teacher_id`, `user_id`)
 VALUES (1, 3);
 
@@ -18,14 +21,8 @@ INSERT INTO `parcial`.`student`(`student_id`,`user_id`,`course_id`)
 VALUES(1,1,1),
 (2,2,1);
 
-INSERT INTO `parcial`.`state`(`state_id`,`description`)
-VALUES(1,'PENDING'),
-(2,'DELIVERED'),
-(3,'FINISHED'),
-(4,'OVERDUE');
-
-INSERT INTO `parcial`.`tp`(`tp_id`,`title`,`final_grade`)
-VALUES (1,'TP 1',NULL);
+INSERT INTO `parcial`.`tp`(`tp_id`,`title`,`description`, `tp_father_id`)
+VALUES (1,'TP 1','El primer TP', NULL);
 
 INSERT INTO `parcial`.`homework`(`homework_id`,`title`,`description`,`dued_date`,`order`,`tp_id`)
 VALUES(1,'Tarea 1.1','Esta es la primera tarea del TP 1',NOW() + INTERVAL 7 DAY,1,1),
